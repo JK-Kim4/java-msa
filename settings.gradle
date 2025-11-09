@@ -1,0 +1,4 @@
+rootProject.name = 'java-msa'
+include 'board-common'
+include 'member-service'
+include 'board-service'
