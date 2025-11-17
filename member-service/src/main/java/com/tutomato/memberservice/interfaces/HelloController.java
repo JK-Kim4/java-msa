@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    @GetMapping("api/members/hello")
+    @GetMapping("/hello")
     public String hello() {
         return "[Member Service] Hello World";
     }
 
+    @GetMapping("/check")
+    public String check() {
+        return "board service is up";
+    }
 }
