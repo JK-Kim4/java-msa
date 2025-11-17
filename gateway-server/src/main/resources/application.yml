@@ -1,0 +1,46 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - name: AccessLogFilter
+              args:
+                baseMessage: "Global Access Logging Filter executed"
+                preLogger: true
+                postLogger: true
+          routes:
+            - id: member-service
+              uri: lb://member-service
+              predicates:
+                - Path=/member-service/**
+              filters:
+                - StripPrefix=1
+
+            - id: board-service
+              uri: lb://board-service
+              predicates:
+                - Path=/board-service/**
+              filters:
+                - StripPrefix=1
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

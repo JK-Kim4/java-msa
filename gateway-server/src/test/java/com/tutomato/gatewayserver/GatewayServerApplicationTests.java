@@ -1,10 +1,10 @@
-package com.tutomato.discoveryserver;
+package com.tutomato.gatewayserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DiscoveryServerApplicationTests {
+class GatewayServerApplicationTests {
 
     @Test
     void contextLoads() {

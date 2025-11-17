@@ -1,5 +1,9 @@
-dependencies {
+plugins {
+    id 'java-library'
+}
 
+dependencies {
+    // test fixtures에서만 부트 테스트/RestAssured를 쓰겠다는 의미
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
     testFixturesImplementation 'io.rest-assured:rest-assured:5.3.2'
 }
