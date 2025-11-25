@@ -36,7 +36,7 @@ public class OrderEntity {
     private String orderId;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Instant createdAt;
 
     protected OrderEntity() {
@@ -50,6 +50,7 @@ public class OrderEntity {
         this.totalPrice = totalPrice;
         this.userId = userId;
         this.orderId = orderId;
+        this.createdAt = Instant.now();
     }
 
     public Long getId() {
