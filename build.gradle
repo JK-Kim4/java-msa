@@ -42,3 +42,7 @@ project(':user-service') {
     apply plugin: 'org.springframework.boot'
 
 }
+
+project(':catalog-service') {
+    apply plugin: 'org.springframework.boot'
+}
