@@ -18,14 +18,14 @@ services:
       timeout: 5s
       retries: 5
 
-  catalogue_db:
+  catalog_db:
     image: postgres:17
-    container_name: catalogue_db
+    container_name: catalog_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: msa-catalogue
-      POSTGRES_USER: msa-catalogue
-      POSTGRES_PASSWORD: msa-catalogue
+      POSTGRES_DB: msa-catalog
+      POSTGRES_USER: msa-catalog
+      POSTGRES_PASSWORD: msa-catalog
       TZ: UTC
     ports:
       - "54332:5432"

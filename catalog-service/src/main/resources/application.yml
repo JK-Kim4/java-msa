@@ -1,0 +1,36 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:54332/msa-catalog
+    username: msa-catalog
+    password: msa-catalog
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  main:
+    allow-bean-definition-overriding: true
+  sql:
+    init:
+      mode: always
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
