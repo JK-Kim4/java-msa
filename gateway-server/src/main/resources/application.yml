@@ -15,20 +15,12 @@ spring:
                 preLogger: true
                 postLogger: true
           routes:
-            - id: member-service
-              uri: lb://member-service
+            - id: user-service
+              uri: lb://user-service
               predicates:
-                - Path=/member-service/**
+                - Path=/user-service/**
               filters:
                 - StripPrefix=1
-
-            - id: board-service
-              uri: lb://board-service
-              predicates:
-                - Path=/board-service/**
-              filters:
-                - StripPrefix=1
-
 
 eureka:
   instance:

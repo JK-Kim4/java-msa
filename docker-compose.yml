@@ -1,0 +1,62 @@
+services:
+  user_db:
+    image: postgres:17
+    container_name: user_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: msa-user
+      POSTGRES_USER: msa-user
+      POSTGRES_PASSWORD: msa-user
+      TZ: UTC
+    ports:
+      - "54331:5432"
+    volumes:
+      - pgdata1:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  catalogue_db:
+    image: postgres:17
+    container_name: catalogue_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: msa-catalogue
+      POSTGRES_USER: msa-catalogue
+      POSTGRES_PASSWORD: msa-catalogue
+      TZ: UTC
+    ports:
+      - "54332:5432"
+    volumes:
+      - pgdata2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  order_db:
+    image: postgres:17
+    container_name: order_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: msa-order
+      POSTGRES_USER: msa-order
+      POSTGRES_PASSWORD: msa-order
+      TZ: UTC
+    ports:
+      - "54333:5432"
+    volumes:
+      - pgdata3:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata1:
+  pgdata2:
+  pgdata3:

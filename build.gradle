@@ -33,32 +33,12 @@ subprojects {
     }
 }
 
-project(':board-service') {
-    apply plugin: 'org.springframework.boot'
-
-
-    dependencies {
-        implementation project(':board-common')
-        testImplementation(testFixtures(project(":board-common")))
-    }
-}
-
-project(':member-service') {
-    apply plugin: 'org.springframework.boot'
-
-
-    dependencies {
-        implementation project(':board-common')
-        testImplementation(testFixtures(project(":board-common")))
-    }
-}
-
 project(':gateway-server') {
     apply plugin: 'org.springframework.boot'
 
+}
 
-    dependencies {
-        implementation project(':board-common')
-        testImplementation(testFixtures(project(":board-common")))
-    }
+project(':user-service') {
+    apply plugin: 'org.springframework.boot'
+
 }
