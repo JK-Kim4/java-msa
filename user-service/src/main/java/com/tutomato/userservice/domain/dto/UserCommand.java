@@ -1,6 +1,5 @@
 package com.tutomato.userservice.domain.dto;
 
-
 import com.tutomato.userservice.interfaces.dto.CreateUserRequest;
 
 public class UserCommand {
