@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: catalog-service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:54332/msa-catalog
@@ -16,6 +16,9 @@ spring:
     defer-datasource-initialization: true
   main:
     allow-bean-definition-overriding: true
+  sql:
+    init:
+      mode: always
 
 eureka:
   instance:
