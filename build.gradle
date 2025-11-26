@@ -38,6 +38,10 @@ project(':gateway-server') {
 
 }
 
+project(':config-server') {
+    apply plugin: 'org.springframework.boot'
+}
+
 project(':user-service') {
     apply plugin: 'org.springframework.boot'
 

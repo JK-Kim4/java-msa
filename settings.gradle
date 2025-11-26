@@ -1,6 +1,7 @@
 rootProject.name = 'java-msa'
 include 'discovery-server'
 include 'gateway-server'
+include 'config-server'
 include 'user-service'
 include 'catalog-service'
 include 'order-service'

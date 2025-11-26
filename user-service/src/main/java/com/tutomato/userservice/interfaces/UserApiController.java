@@ -60,9 +60,10 @@ public class UserApiController {
 
     @GetMapping("/health-check")
     public String healthCheck() {
-        return String.format("Catalog service is running on local port %s (server port: %s)",
+        return String.format("Catalog service is running on local port %s (server port: %s) \n gateway uri: %s",
             environment.getProperty("local.server.port"),
-            environment.getProperty("local.server.port"));
+            environment.getProperty("local.server.port"),
+            environment.getProperty("gateway.uri"));
     }
 
 }

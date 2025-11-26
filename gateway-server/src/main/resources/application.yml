@@ -15,6 +15,27 @@ spring:
                 preLogger: true
                 postLogger: true
           routes:
+            - id: user-service-health-check
+              uri: lb://user-service
+              predicates:
+                - Path=/user-service/health-check, /user-service/actuator/**
+              filters:
+                - StripPrefix=1
+
+            - id: catalog-service-health-check
+              uri: lb://catalog-service
+              predicates:
+                - Path=/catalog-service/health-check, /catalog-service/actuator/**
+              filters:
+                - StripPrefix=1
+
+            - id: order-service-health-check
+              uri: lb://order-service
+              predicates:
+                - Path=/order-service/health-check, /order-service/actuator/**
+              filters:
+                - StripPrefix=1
+
             - id: user-service-login
               uri: lb://user-service
               predicates:
@@ -68,11 +89,3 @@ management:
     web:
       exposure:
         include: "*"
-
-jwt:
-  access:
-    secret: CnzOb1c6g3kkY8QW+TwFl1DgNBFWtSEZamaHS+0BA/U=
-    ttl: 15m
-  refresh:
-    secret: p/E81ODr93t/8QiN7FTQkeXqexA99gshuRSNd+or11g=
-    ttl: 30d
