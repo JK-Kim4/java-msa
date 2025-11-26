@@ -1,6 +1,8 @@
 package com.tutomato.userservice.domain.dto;
 
 import com.tutomato.userservice.domain.User;
+import com.tutomato.userservice.domain.authentication.Token;
+import com.tutomato.userservice.domain.authentication.Tokens;
 import com.tutomato.userservice.infrastructure.UserEntity;
 import java.time.Instant;
 import java.util.List;
@@ -137,6 +139,19 @@ public class UserResult {
 
         public String getOrderId() {
             return orderId;
+        }
+    }
+
+    public static class Authentication {
+
+        Tokens tokens;
+
+        public Authentication(Tokens tokens) {
+            this.tokens = tokens;
+        }
+
+        public Tokens getTokens() {
+            return tokens;
         }
     }
 }

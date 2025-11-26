@@ -6,6 +6,8 @@ import com.tutomato.userservice.domain.dto.UserResult;
 import com.tutomato.userservice.domain.dto.UserResult.UserDetail;
 import com.tutomato.userservice.interfaces.dto.CreateUserRequest;
 import com.tutomato.userservice.interfaces.dto.CreateUserResponse;
+import com.tutomato.userservice.interfaces.dto.LoginRequest;
+import com.tutomato.userservice.interfaces.dto.LoginResponse;
 import com.tutomato.userservice.interfaces.dto.UserResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,15 @@ public class UserApiController {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CreateUserResponse.from(result));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+        @RequestBody LoginRequest request
+    ) {
+        UserResult.Authentication result = userService.login(request.toCommand());
+
+        return ResponseEntity.ok(LoginResponse.from(result));
     }
 
     @GetMapping("/user/{userId}")

@@ -15,11 +15,27 @@ spring:
                 preLogger: true
                 postLogger: true
           routes:
+            - id: user-service-login
+              uri: lb://user-service
+              predicates:
+                - Path=/user-service/login
+              filters:
+                - StripPrefix=1
+
+            - id: user-service-register
+              uri: lb://user-service
+              predicates:
+                - Path=/user-service/users
+                - Method=POST
+              filters:
+                - StripPrefix=1
+
             - id: user-service
               uri: lb://user-service
               predicates:
                 - Path=/user-service/**
               filters:
+                - AuthorizationHeaderFilter
                 - StripPrefix=1
 
             - id: catalog-service
@@ -27,6 +43,7 @@ spring:
               predicates:
                 - Path=/catalog-service/**
               filters:
+                - AuthorizationHeaderFilter
                 - StripPrefix=1
 
             - id: order-service
@@ -34,6 +51,7 @@ spring:
               predicates:
                 - Path=/order-service/**
               filters:
+                - AuthorizationHeaderFilter
                 - StripPrefix=1
 
 eureka:
@@ -50,3 +68,11 @@ management:
     web:
       exposure:
         include: "*"
+
+jwt:
+  access:
+    secret: CnzOb1c6g3kkY8QW+TwFl1DgNBFWtSEZamaHS+0BA/U=
+    ttl: 15m
+  refresh:
+    secret: p/E81ODr93t/8QiN7FTQkeXqexA99gshuRSNd+or11g=
+    ttl: 30d
