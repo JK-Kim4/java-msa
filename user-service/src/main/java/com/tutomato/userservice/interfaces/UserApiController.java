@@ -40,7 +40,7 @@ public class UserApiController {
             .body(CreateUserResponse.from(result));
     }
 
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
         @RequestBody LoginRequest request
     ) {
