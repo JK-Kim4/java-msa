@@ -40,4 +40,27 @@ public class UserCommand {
     }
 
 
+    public static class Authentication {
+
+        String email;
+        String pwd;
+
+        protected Authentication(String email, String pwd) {
+            this.email = email;
+            this.pwd = pwd;
+        }
+
+        public static Authentication of(String email, String pwd) {
+            return new Authentication(email, pwd);
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getPwd() {
+            return pwd;
+        }
+
+    }
 }
