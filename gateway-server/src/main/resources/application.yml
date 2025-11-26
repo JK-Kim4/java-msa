@@ -27,6 +27,7 @@ spring:
               predicates:
                 - Path=/catalog-service/**
               filters:
+                - AuthorizationHeaderFilter
                 - StripPrefix=1
 
             - id: order-service
@@ -50,3 +51,11 @@ management:
     web:
       exposure:
         include: "*"
+
+jwt:
+  access:
+    secret: CnzOb1c6g3kkY8QW+TwFl1DgNBFWtSEZamaHS+0BA/U=
+    ttl: 15m
+  refresh:
+    secret: p/E81ODr93t/8QiN7FTQkeXqexA99gshuRSNd+or11g=
+    ttl: 30d
