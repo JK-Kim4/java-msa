@@ -57,7 +57,7 @@ public class UserResult {
         String name;
         Instant createdAt;
 
-        List<OrderResult> orders;
+        List<OrderResponse> orders;
 
         protected UserDetail(Long id, String userId, String email, String name, Instant createdAt) {
             this.id = id;
@@ -97,48 +97,12 @@ public class UserResult {
             return createdAt;
         }
 
-        public List<OrderResult> getOrders() {
+        public List<OrderResponse> getOrders() {
             return orders;
         }
 
-        public void setOrders(List<OrderResult> orders) {
+        public void setOrders(List<OrderResponse> orders) {
             this.orders = orders;
-        }
-    }
-
-
-    public static class OrderResult {
-
-        String productId;
-        Integer quantity;
-        Integer unitPrice;
-        Integer totalPrice;
-        Instant orderedAt;
-
-        String orderId;
-
-        public String getProductId() {
-            return productId;
-        }
-
-        public Integer getQuantity() {
-            return quantity;
-        }
-
-        public Integer getUnitPrice() {
-            return unitPrice;
-        }
-
-        public Integer getTotalPrice() {
-            return totalPrice;
-        }
-
-        public Instant getOrderedAt() {
-            return orderedAt;
-        }
-
-        public String getOrderId() {
-            return orderId;
         }
     }
 
