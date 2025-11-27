@@ -19,6 +19,11 @@ spring:
   sql:
     init:
       mode: always
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: msa
+    password: msa
 
 eureka:
   instance:

@@ -27,9 +27,10 @@ public class OrderApiController {
 
     @GetMapping("/health-check")
     public String healthCheck() {
-        return String.format("Catalog service is running on local port %s (server port: %s)",
+        return String.format("Order service is running on local port %s (server port: %s) \n bus test: %s",
             environment.getProperty("local.server.port"),
-            environment.getProperty("local.server.port"));
+            environment.getProperty("local.server.port"),
+            environment.getProperty("bus.test"));
     }
 
     @PostMapping("/{userId}/orders")

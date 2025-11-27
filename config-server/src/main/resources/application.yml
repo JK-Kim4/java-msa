@@ -9,3 +9,15 @@ spring:
         git:
           uri: file:///Users/jongwan/Desktop/workspace/spring-config
           default-label: master
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: msa
+    password: msa
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
