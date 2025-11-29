@@ -3,7 +3,10 @@ package com.tutomato.catalogservice.domain;
 import com.tutomato.catalogservice.infrastructure.CatalogEntity;
 import com.tutomato.catalogservice.infrastructure.CatalogJpaRepository;
 import java.util.List;
+
+import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CatalogService {
@@ -18,5 +21,15 @@ public class CatalogService {
         List<CatalogEntity> catalogEntities = catalogJpaRepository.findAll();
 
         return catalogEntities.stream().map(Catalog::from).toList();
+    }
+
+    @Transactional
+    public Catalog decreaseStock(DecreaseStockCommand command){
+        CatalogEntity entity = catalogJpaRepository.findByProductId(command.getProductId())
+                .orElseThrow(() -> new NoResultException("Product not found"));
+
+        entity.decreaseStock(command.getDecreaseQuantity());
+
+        return Catalog.from(entity);
     }
 }

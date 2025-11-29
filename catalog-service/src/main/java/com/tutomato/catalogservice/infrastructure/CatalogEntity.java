@@ -6,7 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import java.time.Instant;
+
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
@@ -32,6 +34,35 @@ public class CatalogEntity {
     @CreatedDate
     @Column(name = "created_at")
     private Instant createdAt;
+
+    protected CatalogEntity() {
+    }
+
+    protected CatalogEntity(String productId, String productName, Integer stock, Integer unitPrice, Instant createdAt) {
+        this.productId = productId;
+        this.productName = productName;
+        this.stock = stock;
+        this.unitPrice = unitPrice;
+        this.createdAt = createdAt;
+    }
+
+    public static CatalogEntity create(
+            String productId,
+            String productName,
+            Integer stock,
+            Integer unitPrice
+    ) {
+        return new CatalogEntity(productId, productName, stock, unitPrice, Instant.now());
+    }
+
+    public void decreaseStock(int decreaseQuantity) {
+
+        if (this.stock < decreaseQuantity) {
+            throw new IllegalArgumentException("Stock exceeds stock limit");
+        }
+
+        this.stock -= decreaseQuantity;
+    }
 
     public Long getId() {
         return id;
