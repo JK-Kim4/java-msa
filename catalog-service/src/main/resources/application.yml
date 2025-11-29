@@ -24,6 +24,14 @@ spring:
     port: 5672
     username: msa
     password: msa
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      # 1) 명령/읽기 타임아웃 (read timeout, command timeout)
+      timeout: 2s
+      # 2) 커넥션 생성 타임아웃 (connect timeout)
+      connect-timeout: 3s
 
 eureka:
   instance:

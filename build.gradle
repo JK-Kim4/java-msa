@@ -22,6 +22,10 @@ subprojects {
         mavenCentral()
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     ext {
         set('springCloudVersion', "2025.0.0")
     }

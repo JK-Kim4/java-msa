@@ -74,6 +74,13 @@ services:
       timeout: 5s
       retries: 5
 
+  redis-master:
+    container_name: redis-master
+    image: redis:7
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+
 volumes:
   pgdata1:
   pgdata2:
