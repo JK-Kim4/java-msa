@@ -4,6 +4,8 @@ import com.tutomato.catalogservice.infrastructure.CatalogEntity;
 import com.tutomato.catalogservice.infrastructure.CatalogJpaRepository;
 import java.util.List;
 
+import com.tutomato.catalogservice.infrastructure.lock.DistributedLock;
+import com.tutomato.catalogservice.infrastructure.lock.LockKey;
 import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class CatalogService {
         return catalogEntities.stream().map(Catalog::from).toList();
     }
 
+    @DistributedLock(key = LockKey.UPDATE_ITEM_STOCK, keyValue = "#command.productId")
     @Transactional
     public Catalog decreaseStock(DecreaseStockCommand command){
         CatalogEntity entity = catalogJpaRepository.findByProductId(command.getProductId())

@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.Ordered;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -25,6 +27,7 @@ public class DistributedLockAspect {
 
     private final RedissonClient redissonClient;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExpressionParser parser = new SpelExpressionParser();
     private final ParameterNameDiscoverer paramNameDiscoverer = new DefaultParameterNameDiscoverer();
 
@@ -32,13 +35,13 @@ public class DistributedLockAspect {
         this.redissonClient = redissonClient;
     }
 
-    @Around("@annotation(lock)")
-    public Object doWithLock(
-            ProceedingJoinPoint joinPoint,
-            DistributedLock lock
-    ) throws Throwable {
 
+    @Around("@annotation(com.tutomato.catalogservice.infrastructure.lock.DistributedLock)")
+    public Object doWithLock(ProceedingJoinPoint joinPoint) throws Throwable {
+        String method = joinPoint.getSignature().toShortString();
+        DistributedLock lock = getDistributedLockAnnotation(joinPoint);
         String lockKey = createLockKey(joinPoint, lock);
+
         RLock rLock = redissonClient.getLock(lockKey);
 
         boolean acquired = false;
@@ -52,6 +55,7 @@ public class DistributedLockAspect {
                 throw new IllegalStateException("락 획득 실패: " + lockKey);
             }
 
+            logger.info("[DISTRIBUTED-LOCK-AOP] BEFORE method={}", method);
             return joinPoint.proceed();
 
         } catch (InterruptedException e) {
@@ -61,8 +65,15 @@ public class DistributedLockAspect {
         } finally {
             if (acquired && rLock.isHeldByCurrentThread()) {
                 rLock.unlock();
+                logger.info("[DISTRIBUTED-LOCK-AOP] AFTER method={}", method);
             }
         }
+    }
+
+    private DistributedLock getDistributedLockAnnotation(ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        return method.getAnnotation(DistributedLock.class);
     }
 
     private String createLockKey(ProceedingJoinPoint joinPoint, DistributedLock lock) {
