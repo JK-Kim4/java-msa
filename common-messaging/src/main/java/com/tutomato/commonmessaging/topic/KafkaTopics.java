@@ -1,4 +1,4 @@
-package com.tutomato.catalogservice.infrastructure.message;
+package com.tutomato.commonmessaging.topic;
 
 public class KafkaTopics {
 
@@ -20,3 +20,4 @@ public class KafkaTopics {
         public static final String ORDER_COMPLETED = "catalog-service.order.completed-group";
     }
 }
+

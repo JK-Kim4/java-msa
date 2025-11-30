@@ -1,4 +1,4 @@
-package com.tutomato.catalogservice.infrastructure.message;
+package com.tutomato.commonmessaging.order;
 
 public record OrderIssuedMessage(
     String orderId,

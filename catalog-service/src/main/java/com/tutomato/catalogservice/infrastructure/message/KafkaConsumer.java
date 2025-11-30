@@ -2,6 +2,8 @@ package com.tutomato.catalogservice.infrastructure.message;
 
 import com.tutomato.catalogservice.domain.CatalogService;
 import com.tutomato.catalogservice.domain.DecreaseStockCommand;
+import com.tutomato.commonmessaging.order.OrderIssuedMessage;
+import com.tutomato.commonmessaging.topic.KafkaTopics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
