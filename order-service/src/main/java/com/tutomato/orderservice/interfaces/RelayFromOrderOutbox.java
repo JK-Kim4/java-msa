@@ -9,6 +9,7 @@ import com.tutomato.orderservice.infrastructure.message.OrderMessagePublisher;
 import com.tutomato.orderservice.infrastructure.message.OrderOutbox;
 import com.tutomato.orderservice.infrastructure.message.OrderOutboxService;
 import java.util.List;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,11 @@ public class RelayFromOrderOutbox {
 
     @Transactional
     @Scheduled(initialDelay = 5000L, fixedDelay = 1000L)
+    @SchedulerLock(
+        name = "orderOutboxRelayJob",
+        lockAtMostFor = "5s",
+        lockAtLeastFor = "1s"
+    )
     public void relay() {
 
         List<OrderOutbox> outboxes = orderOutboxService.findTop100PendingList();

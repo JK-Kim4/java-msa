@@ -6,6 +6,10 @@ spring:
     port: 5672
     username: msa
     password: msa
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init.sql
 
   kafka:
     bootstrap-servers: localhost:29092
@@ -19,3 +23,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
