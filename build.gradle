@@ -66,3 +66,11 @@ project(':order-service') {
         implementation project(':common-messaging')
     }
 }
+
+project(':payment-service') {
+    apply plugin: 'org.springframework.boot'
+
+    dependencies {
+        implementation project(':common-messaging')
+    }
+}
