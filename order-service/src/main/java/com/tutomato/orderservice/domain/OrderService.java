@@ -11,19 +11,15 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
-    private final OrderMessagePublisher orderMessagePublisher;
 
-    public OrderService(OrderJpaRepository orderJpaRepository, OrderMessagePublisher orderMessagePublisher) {
+    public OrderService(OrderJpaRepository orderJpaRepository) {
         this.orderJpaRepository = orderJpaRepository;
-        this.orderMessagePublisher = orderMessagePublisher;
     }
 
     public Order create(OrderCommand.Create command) {
         Order order = Order.fromCommand(command);
 
         orderJpaRepository.save(order.toEntity());
-
-        orderMessagePublisher.send(new OrderIssuedMessage(order.getOrderId(), order.getProductId(), order.getQuantity()));
 
         return order;
     }
