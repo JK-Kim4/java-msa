@@ -36,4 +36,10 @@ public @interface DistributedLock {
      * 락을 획득한 이후 leaseTime 이 지나면 락을 해제한다
      */
     long leaseTime() default 3L;
+
+    // 재시도 횟수
+    int retryCount() default 3;
+
+    // 재시도 간격 (millis 기준)
+    long retryDelay() default 100L;
 }

@@ -40,8 +40,8 @@ public class RelayFromOrderOutbox {
                 OrderIssuedMessage message =
                     objectMapper.readValue(orderOutbox.getPayload(), OrderIssuedMessage.class);
 
-                orderOutbox.markPublished();
                 orderMessagePublisher.send(message);
+                orderOutbox.markPublished();
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

@@ -3,8 +3,11 @@ package com.tutomato.orderservice.interfaces;
 import com.tutomato.orderservice.application.OrderCreateService;
 import com.tutomato.orderservice.domain.Order;
 import com.tutomato.orderservice.domain.OrderService;
+import com.tutomato.orderservice.domain.OrderV2;
 import com.tutomato.orderservice.interfaces.dto.CreateOrderRequest;
+import com.tutomato.orderservice.interfaces.dto.CreateOrderRequestV2;
 import com.tutomato.orderservice.interfaces.dto.OrderResponse;
+import com.tutomato.orderservice.interfaces.dto.OrderResponseV2;
 import java.util.List;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -50,6 +53,19 @@ public class OrderApiController {
             .status(HttpStatus.CREATED)
             .body(OrderResponse.from(order));
     }
+
+    @PostMapping("/v2/{userId}/orders")
+    public ResponseEntity<OrderResponseV2> createV2(
+        @PathVariable(name = "userId") String userId,
+        @RequestBody CreateOrderRequestV2 request
+    ) {
+        OrderV2 order = orderCreateService.createV2(request.toCommand(userId));
+
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(OrderResponseV2.from(order));
+    }
+
 
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<OrderResponse>> getOrders(

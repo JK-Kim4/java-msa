@@ -45,27 +45,46 @@ public class DistributedLockAspect {
         RLock rLock = redissonClient.getLock(lockKey);
 
         boolean acquired = false;
+        int attempt = 0;
+        int maxAttempts = lock.retryCount() + 1; // 최초 1회 + 재시도 N회
+
         try {
-            acquired = rLock.tryLock(
-                    lock.waitTime(),
-                    lock.leaseTime(),
-                    lock.timeUnit()
-            );
-            if (!acquired) {
-                throw new IllegalStateException("락 획득 실패: " + lockKey);
+            while (attempt < maxAttempts && !acquired) {
+                attempt++;
+                try {
+                    acquired = rLock.tryLock(
+                        lock.waitTime(),
+                        lock.leaseTime(),
+                        lock.timeUnit()
+                    );
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException("락 획득 중 인터럽트", e);
+                }
+
+                if (!acquired) {
+                    logger.warn("[DISTRIBUTED-LOCK-AOP] lock acquire failed. key={}, attempt={}/{}",
+                        lockKey, attempt, maxAttempts);
+
+                    if (attempt < maxAttempts) {
+                        // 다음 재시도 전 대기
+                        Thread.sleep(lock.retryDelay());
+                    }
+                }
             }
 
-            logger.info("[DISTRIBUTED-LOCK-AOP] BEFORE method={}", method);
-            return joinPoint.proceed();
+            if (!acquired) {
+                // 최종 실패 처리 – 비즈니스 예외로 감싸도 됨
+                throw new IllegalStateException("락 획득 실패(재시도 초과): " + lockKey);
+            }
 
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException("락 획득 중 인터럽트", e);
+            logger.info("[DISTRIBUTED-LOCK-AOP] BEFORE method={}, key={}", method, lockKey);
+            return joinPoint.proceed();
 
         } finally {
             if (acquired && rLock.isHeldByCurrentThread()) {
                 rLock.unlock();
-                logger.info("[DISTRIBUTED-LOCK-AOP] AFTER method={}", method);
+                logger.info("[DISTRIBUTED-LOCK-AOP] AFTER method={}, key={}", method, lockKey);
             }
         }
     }

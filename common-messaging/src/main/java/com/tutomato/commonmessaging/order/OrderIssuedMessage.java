@@ -1,9 +1,10 @@
 package com.tutomato.commonmessaging.order;
 
+import java.util.List;
+
 public record OrderIssuedMessage(
     String orderId,
-    String productId,
-    Integer decreaseQuantity
+    List<OrderLine> orderLine
 ) {
 
 }

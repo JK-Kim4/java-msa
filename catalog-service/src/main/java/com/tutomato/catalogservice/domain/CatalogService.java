@@ -25,7 +25,12 @@ public class CatalogService {
         return catalogEntities.stream().map(Catalog::from).toList();
     }
 
-    @DistributedLock(key = LockKey.UPDATE_ITEM_STOCK, keyValue = "#command.productId")
+    @DistributedLock(
+        key = LockKey.UPDATE_ITEM_STOCK,
+        keyValue = "#command.productId",
+        retryCount = 5,
+        retryDelay = 300
+    )
     @Transactional
     public Catalog decreaseStock(DecreaseStockCommand command){
         CatalogEntity entity = catalogJpaRepository.findByProductId(command.getProductId())
@@ -34,5 +39,10 @@ public class CatalogService {
         entity.decreaseStock(command.getDecreaseQuantity());
 
         return Catalog.from(entity);
+    }
+
+    @Transactional
+    public void decreaseStocks(List<DecreaseStockCommand> commands) {
+        commands.forEach(this::decreaseStock);
     }
 }

@@ -17,14 +17,16 @@ public class KafkaConsumer implements Consumer {
     private final CatalogService catalogService;
     private final OrderMessageInMemoryRepository orderMessageInMemoryRepository;
 
-    public KafkaConsumer(CatalogService catalogService, OrderMessageInMemoryRepository orderMessageInMemoryRepository) {
+    public KafkaConsumer(CatalogService catalogService,
+        OrderMessageInMemoryRepository orderMessageInMemoryRepository) {
         this.catalogService = catalogService;
         this.orderMessageInMemoryRepository = orderMessageInMemoryRepository;
     }
 
     @KafkaListener(
         topics = KafkaTopics.ORDER_COMPLETED,
-        groupId = KafkaTopics.TopicGroups.ORDER_COMPLETED
+        groupId = KafkaTopics.TopicGroups.ORDER_COMPLETED,
+        concurrency = "3"
     )
     @Override
     public void updateStock(OrderIssuedMessage message) {
@@ -34,7 +36,11 @@ public class KafkaConsumer implements Consumer {
             return;
         }
 
-        catalogService.decreaseStock(DecreaseStockCommand.of(message.productId(),  message.decreaseQuantity()));
+        catalogService.decreaseStocks(message.orderLine().stream().map(line -> {
+                return DecreaseStockCommand.of(line.productId(), line.decreaseQuantity());
+            }).toList()
+        );
+
         orderMessageInMemoryRepository.saveIdempotencyKey(message);
     }
 }
