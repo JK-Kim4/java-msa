@@ -1,5 +1,6 @@
 package com.tutomato.orderservice.interfaces;
 
+import com.tutomato.orderservice.application.OrderCreateService;
 import com.tutomato.orderservice.domain.Order;
 import com.tutomato.orderservice.domain.OrderService;
 import com.tutomato.orderservice.interfaces.dto.CreateOrderRequest;
@@ -18,11 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderApiController {
 
     private final OrderService orderService;
+    private final OrderCreateService orderCreateService;
     private final Environment environment;
 
-    public OrderApiController(OrderService orderService, Environment environment) {
+    public OrderApiController(
+        OrderService orderService,
+        OrderCreateService orderCreateService,
+        Environment environment) {
         this.orderService = orderService;
         this.environment = environment;
+        this.orderCreateService = orderCreateService;
     }
 
     @GetMapping("/health-check")
@@ -38,7 +44,7 @@ public class OrderApiController {
         @PathVariable(name = "userId") String userId,
         @RequestBody CreateOrderRequest request
     ) {
-        Order order = orderService.create(request.toCommand(userId));
+        Order order = orderCreateService.create(request.toCommand(userId));
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
