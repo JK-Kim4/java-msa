@@ -56,6 +56,25 @@ services:
       timeout: 5s
       retries: 5
 
+  payment_db:
+    image: postgres:17
+    container_name: payment_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: msa-payment
+      POSTGRES_USER: msa-payment
+      POSTGRES_PASSWORD: msa-payment
+      TZ: UTC
+    ports:
+      - "54334:5432"
+    volumes:
+      - pgdata4:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
@@ -131,4 +150,5 @@ volumes:
   pgdata1:
   pgdata2:
   pgdata3:
+  pgdata4:
   rabbitmq_data:

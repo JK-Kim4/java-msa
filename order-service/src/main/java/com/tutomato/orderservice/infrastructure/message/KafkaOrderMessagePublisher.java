@@ -1,6 +1,7 @@
 package com.tutomato.orderservice.infrastructure.message;
 
 import com.tutomato.commonmessaging.order.OrderIssuedMessage;
+import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ public class KafkaOrderMessagePublisher implements OrderMessagePublisher {
     }
 
     @Override
-    public void send(OrderIssuedMessage payload) {
-        kafkaTemplate.send(KafkaTopics.ORDER_COMPLETED, payload.orderId(), payload);
+    public void send(String topic, String partitionKey, Object payload) {
+        kafkaTemplate.send(topic, partitionKey, payload);
     }
 
     @Override

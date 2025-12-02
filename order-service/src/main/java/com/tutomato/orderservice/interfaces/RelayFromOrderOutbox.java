@@ -3,8 +3,7 @@ package com.tutomato.orderservice.interfaces;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tutomato.commonmessaging.order.OrderIssuedMessage;
-import com.tutomato.commonmessaging.topic.KafkaTopics;
-import com.tutomato.orderservice.infrastructure.OrderOutboxRepository;
+import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.orderservice.infrastructure.message.OrderMessagePublisher;
 import com.tutomato.orderservice.infrastructure.message.OrderOutbox;
 import com.tutomato.orderservice.infrastructure.message.OrderOutboxService;
@@ -43,10 +42,10 @@ public class RelayFromOrderOutbox {
 
         outboxes.forEach(orderOutbox -> {
             try {
-                OrderIssuedMessage message =
-                    objectMapper.readValue(orderOutbox.getPayload(), OrderIssuedMessage.class);
+                OrderPendingMessage message =
+                    objectMapper.readValue(orderOutbox.getPayload(), OrderPendingMessage.class);
 
-                orderMessagePublisher.send(message);
+                orderMessagePublisher.send(orderOutbox.getEventType(), message.orderId(), message);
                 orderOutbox.markPublished();
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);

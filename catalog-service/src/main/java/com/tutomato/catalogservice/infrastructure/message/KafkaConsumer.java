@@ -2,8 +2,11 @@ package com.tutomato.catalogservice.infrastructure.message;
 
 import com.tutomato.catalogservice.domain.CatalogService;
 import com.tutomato.catalogservice.domain.DecreaseStockCommand;
+import com.tutomato.commonmessaging.common.AggregateType;
 import com.tutomato.commonmessaging.order.OrderIssuedMessage;
+import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
+import com.tutomato.commonmessaging.topic.KafkaTopics.TopicGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,12 +27,11 @@ public class KafkaConsumer implements Consumer {
     }
 
     @KafkaListener(
-        topics = KafkaTopics.ORDER_COMPLETED,
-        groupId = KafkaTopics.TopicGroups.ORDER_COMPLETED,
-        concurrency = "3"
+        topics = KafkaTopics.ORDER_COMPLETE,
+        groupId ="catalog:"+TopicGroups.ORDER_COMPLETE
     )
     @Override
-    public void updateStock(OrderIssuedMessage message) {
+    public void consume(OrderPendingMessage message) {
 
         if (orderMessageInMemoryRepository.hasIdempotencyKey(message)) {
             logger.info("Idempotency key already exists. message: {}", message);

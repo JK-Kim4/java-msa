@@ -43,23 +43,11 @@ public class OrderApiController {
     }
 
     @PostMapping("/{userId}/orders")
-    public ResponseEntity<OrderResponse> create(
-        @PathVariable(name = "userId") String userId,
-        @RequestBody CreateOrderRequest request
-    ) {
-        Order order = orderCreateService.create(request.toCommand(userId));
-
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(OrderResponse.from(order));
-    }
-
-    @PostMapping("/v2/{userId}/orders")
-    public ResponseEntity<OrderResponseV2> createV2(
+    public ResponseEntity<OrderResponseV2> create(
         @PathVariable(name = "userId") String userId,
         @RequestBody CreateOrderRequestV2 request
     ) {
-        OrderV2 order = orderCreateService.createV2(request.toCommand(userId));
+        OrderV2 order = orderCreateService.create(request.toCommand(userId));
 
         return ResponseEntity
             .status(HttpStatus.CREATED)

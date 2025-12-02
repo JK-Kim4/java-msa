@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tutomato.commonmessaging.common.AggregateType;
 import com.tutomato.commonmessaging.order.OrderIssuedMessage;
 import com.tutomato.commonmessaging.order.OrderLine;
+import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import com.tutomato.orderservice.domain.Order;
 import com.tutomato.orderservice.domain.OrderV2;
@@ -26,36 +27,20 @@ public class OrderCreateService implements OrderCreateUseCase {
 
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
-    private final OrderJpaRepository orderJpaRepository;
     private final OrderOutboxRepository orderOutboxRepository;
 
     public OrderCreateService(
         ObjectMapper objectMapper,
         OrderRepository orderRepository,
-        OrderJpaRepository orderJpaRepository,
         OrderOutboxRepository orderOutboxRepository
     ) {
         this.objectMapper = objectMapper;
         this.orderRepository = orderRepository;
-        this.orderJpaRepository = orderJpaRepository;
         this.orderOutboxRepository = orderOutboxRepository;
     }
 
-
     @Override
-    public Order create(OrderCommand.Create command) {
-
-        /*Order order = Order.fromCommand(command);
-        orderJpaRepository.save(order.toEntity());
-
-        OrderOutbox outbox = createPendingOutbox(order);
-        orderOutboxRepository.save(outbox);
-
-        return order;*/
-        return null;
-    }
-
-    public OrderV2 createV2(OrderCommand.CreateV2 command) {
+    public OrderV2 create(OrderCommand.CreateV2 command) {
 
         OrderV2 orderV2 = OrderV2.from(command);
         orderRepository.save(orderV2);
@@ -70,11 +55,11 @@ public class OrderCreateService implements OrderCreateUseCase {
     private OrderOutbox createPendingOutbox(OrderV2 order) {
         List<OrderLine> orderLines = order.getOrderLines().stream().map(
             orderLine -> {
-                return new OrderLine(orderLine.getProductId(), orderLine.getQuantity());
+                return new OrderLine(orderLine.getProductId(), orderLine.getUnitPrice(), orderLine.getQuantity());
             }
         ).toList();
 
-        String payload = toJson(new OrderIssuedMessage(
+        String payload = toJson(new OrderPendingMessage(
             order.getOrderId(),
             orderLines
         ));
@@ -82,7 +67,7 @@ public class OrderCreateService implements OrderCreateUseCase {
         return OrderOutbox.pending(
             AggregateType.ORDER,
             order.getOrderId(),
-            KafkaTopics.ORDER_COMPLETED,
+            KafkaTopics.ORDER_COMPLETE,
             payload
         );
     }

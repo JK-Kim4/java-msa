@@ -3,23 +3,23 @@ server:
 
 spring:
   application:
-    name: catalog-service
+    name: payment-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:54332/msa-catalog
-    username: msa-catalog
-    password: msa-catalog
+    url: jdbc:postgresql://localhost:54334/msa-payment
+    username: msa-payment
+    password: msa-payment
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+            ddl-auto: create
 #      ddl-auto: none
     defer-datasource-initialization: true
   main:
     allow-bean-definition-overriding: true
-  sql:
-    init:
-      mode: always
+  #  sql:
+  #    init:
+  #      mode: always
   rabbitmq:
     host: localhost
     port: 5672

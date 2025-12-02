@@ -10,6 +10,13 @@ public class KafkaTopics {
     public static final String ORDER_COMPLETED = "order.completed";
     public static final String ORDER_COMPLETED_DLQ = "order.completed.dlq";
 
+    public static final String ORDER_PENDING = "order.pending";
+    public static final String ORDER_COMPLETE = "order.complete";
+    public static final String PAYMENT_SUCCESS = "payment.success";
+    public static final String PAYMENT_FAIL = "payment.fail";
+    public static final String CATALOG_STOCK_DECREASE = "catalog.stock-decrease";
+    public static final String CATALOG_STOCK_DECREASE_FAIL = "catalog.stock-decrease.fail";
+
 
     public static class TopicGroups {
 
@@ -18,6 +25,8 @@ public class KafkaTopics {
         }
 
         public static final String ORDER_COMPLETED = "catalog-service.order.completed-group";
+        public static final String ORDER_COMPLETE = "order-complete-group";
+        public static final String PAYMENT_SUCCESS = "payment-success-group";
     }
 }
 
