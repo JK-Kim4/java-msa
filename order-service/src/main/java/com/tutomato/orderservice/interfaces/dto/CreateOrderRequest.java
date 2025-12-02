@@ -1,32 +1,55 @@
 package com.tutomato.orderservice.interfaces.dto;
 
+import com.tutomato.orderservice.domain.OrderLine;
 import com.tutomato.orderservice.domain.dto.OrderCommand;
-import java.util.UUID;
+
+import java.util.List;
 
 public class CreateOrderRequest {
 
-    String productId;
-    Integer quantity;
-    Integer unitPrice;
+    List<OrderLineDto> orderLineDtos;
 
     public OrderCommand.Create toCommand(String userId) {
-        return new OrderCommand.Create(
-            productId,
-            quantity,
-            unitPrice,
-            userId
-        );
+        return OrderCommand.Create.of(userId, orderLineDtos);
     }
 
-    public String getProductId() {
-        return productId;
+    public List<OrderLineDto> getOrderLines() {
+        return orderLineDtos;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+    public static class OrderLineDto {
 
-    public Integer getUnitPrice() {
-        return unitPrice;
+        String productId;
+        Integer quantity;
+        Integer unitPrice;
+
+        protected OrderLineDto() {
+        }
+
+        protected OrderLineDto(String productId, Integer quantity, Integer unitPrice) {
+            this.productId = productId;
+            this.quantity = quantity;
+            this.unitPrice = unitPrice;
+        }
+
+        public static OrderLineDto from(OrderLine orderLine) {
+            return new OrderLineDto(
+                    orderLine.getProductId(),
+                    orderLine.getQuantity(),
+                    orderLine.getUnitPrice()
+            );
+        }
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public Integer getUnitPrice() {
+            return unitPrice;
+        }
     }
 }

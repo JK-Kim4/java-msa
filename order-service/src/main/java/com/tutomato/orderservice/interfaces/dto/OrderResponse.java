@@ -1,6 +1,5 @@
 package com.tutomato.orderservice.interfaces.dto;
 
-import com.tutomato.orderservice.domain.Order;
 import java.time.LocalDateTime;
 
 public class OrderResponse {
@@ -25,18 +24,6 @@ public class OrderResponse {
         this.userId = userId;
         this.orderId = orderId;
         this.createdAt = createdAt;
-    }
-
-    public static OrderResponse from(Order order) {
-        return new OrderResponse(
-            order.getProductId(),
-            order.getQuantity(),
-            order.getUnitPrice(),
-            order.getTotalPrice(),
-            order.getUserId(),
-            order.getOrderId(),
-            order.getCreatedAt()
-        );
     }
 
     public String getProductId() {

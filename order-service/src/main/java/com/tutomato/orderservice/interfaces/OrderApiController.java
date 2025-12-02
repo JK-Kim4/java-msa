@@ -1,14 +1,10 @@
 package com.tutomato.orderservice.interfaces;
 
 import com.tutomato.orderservice.application.OrderCreateService;
-import com.tutomato.orderservice.domain.Order;
 import com.tutomato.orderservice.domain.OrderService;
-import com.tutomato.orderservice.domain.OrderV2;
+import com.tutomato.orderservice.domain.dto.OrderResult;
 import com.tutomato.orderservice.interfaces.dto.CreateOrderRequest;
-import com.tutomato.orderservice.interfaces.dto.CreateOrderRequestV2;
-import com.tutomato.orderservice.interfaces.dto.OrderResponse;
 import com.tutomato.orderservice.interfaces.dto.OrderResponseV2;
-import java.util.List;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,23 +41,13 @@ public class OrderApiController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<OrderResponseV2> create(
         @PathVariable(name = "userId") String userId,
-        @RequestBody CreateOrderRequestV2 request
+        @RequestBody CreateOrderRequest request
     ) {
-        OrderV2 order = orderCreateService.create(request.toCommand(userId));
+        OrderResult order = orderCreateService.create(request.toCommand(userId));
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(OrderResponseV2.from(order));
-    }
-
-
-    @GetMapping("/{userId}/orders")
-    public ResponseEntity<List<OrderResponse>> getOrders(
-        @PathVariable(name = "userId") String userId
-    ) {
-        List<Order> orders = orderService.findByUserId(userId);
-
-        return ResponseEntity.ok(orders.stream().map(OrderResponse::from).toList());
     }
 
 }

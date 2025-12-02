@@ -4,11 +4,11 @@ import java.util.List;
 
 public record OrderPendingMessage(
     String orderId,
-    List<OrderLine> orderLine
+    List<CommonOrderLine> commonOrderLine
 ) {
 
     public Integer calculatePriceSum() {
-        return orderLine.stream().mapToInt(OrderLine::calculate).sum();
+        return commonOrderLine.stream().mapToInt(CommonOrderLine::calculate).sum();
     }
 
 }

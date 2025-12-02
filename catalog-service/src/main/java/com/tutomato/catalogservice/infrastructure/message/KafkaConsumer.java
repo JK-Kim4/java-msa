@@ -2,8 +2,6 @@ package com.tutomato.catalogservice.infrastructure.message;
 
 import com.tutomato.catalogservice.domain.CatalogService;
 import com.tutomato.catalogservice.domain.DecreaseStockCommand;
-import com.tutomato.commonmessaging.common.AggregateType;
-import com.tutomato.commonmessaging.order.OrderIssuedMessage;
 import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import com.tutomato.commonmessaging.topic.KafkaTopics.TopicGroups;
@@ -38,7 +36,7 @@ public class KafkaConsumer implements Consumer {
             return;
         }
 
-        catalogService.decreaseStocks(message.orderLine().stream().map(line -> {
+        catalogService.decreaseStocks(message.commonOrderLine().stream().map(line -> {
                 return DecreaseStockCommand.of(line.productId(), line.decreaseQuantity());
             }).toList()
         );

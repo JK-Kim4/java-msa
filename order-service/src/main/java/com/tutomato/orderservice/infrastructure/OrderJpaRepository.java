@@ -1,11 +1,8 @@
 package com.tutomato.orderservice.infrastructure;
 
-import java.util.List;
+import com.tutomato.orderservice.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderJpaRepository extends JpaRepository<OrderEntity, Long> {
+public interface OrderJpaRepository extends JpaRepository<Order, Long> {
 
-    OrderEntity findByOrderId(String orderId);
-
-    List<OrderEntity> findByUserId(String userId);
 }

@@ -1,6 +1,6 @@
 package com.tutomato.commonmessaging.order;
 
-public record OrderLine(
+public record CommonOrderLine(
     String productId,
     Integer unitPrice,
     Integer decreaseQuantity

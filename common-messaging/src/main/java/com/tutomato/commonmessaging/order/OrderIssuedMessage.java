@@ -4,7 +4,7 @@ import java.util.List;
 
 public record OrderIssuedMessage(
     String orderId,
-    List<OrderLine> orderLine
+    List<CommonOrderLine> commonOrderLine
 ) {
 
 }

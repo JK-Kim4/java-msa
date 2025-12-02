@@ -1,7 +1,7 @@
-package com.tutomato.orderservice.infrastructure;
+package com.tutomato.orderservice.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.tutomato.orderservice.interfaces.dto.CreateOrderRequestV2.OrderLine;
+import com.tutomato.orderservice.interfaces.dto.CreateOrderRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "order_lines")
-public class OrderLineEntity {
+public class OrderLine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class OrderLineEntity {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private OrderEntityV2 orderEntity;
+    private Order orderEntity;
 
     @Column(name = "product_id")
     private String productId;
@@ -34,11 +34,11 @@ public class OrderLineEntity {
     @Column(name = "unit_price")
     private Integer unitPrice;
 
-    protected OrderLineEntity() {
+    protected OrderLine() {
     }
 
-    protected OrderLineEntity(
-        OrderEntityV2 entity,
+    protected OrderLine(
+        Order entity,
         String productId,
         Integer quantity,
         Integer unitPrice
@@ -49,15 +49,15 @@ public class OrderLineEntity {
         this.unitPrice = unitPrice;
     }
 
-    public static OrderLineEntity create(
-        OrderEntityV2 entity,
-        OrderLine orderLine
+    public static OrderLine create(
+        Order entity,
+        CreateOrderRequest.OrderLineDto orderLineDto
     ) {
-        return new OrderLineEntity(
+        return new OrderLine(
             entity,
-            orderLine.getProductId(),
-            orderLine.getQuantity(),
-            orderLine.getUnitPrice()
+            orderLineDto.getProductId(),
+            orderLineDto.getQuantity(),
+            orderLineDto.getUnitPrice()
         );
     }
 
@@ -65,4 +65,23 @@ public class OrderLineEntity {
         return quantity * unitPrice;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Order getOrderEntity() {
+        return orderEntity;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Integer getUnitPrice() {
+        return unitPrice;
+    }
 }
