@@ -17,8 +17,8 @@ public class OrderCommand {
         }
 
         protected Create(String userId, List<OrderLineDto> orderLineDtos) {
-            this.orderLineDtos = orderLineDtos;
             this.userId = userId;
+            this.orderLineDtos = orderLineDtos;
         }
 
         public static Create of(String userId, List<OrderLineDto> orderLineDtos) {
@@ -28,7 +28,7 @@ public class OrderCommand {
         public Order toEntity() {
             String orderId = UUID.randomUUID().toString();
 
-            return Order.from(this.userId, orderId);
+            return Order.create(this.userId, orderId);
         }
 
         public List<OrderLineDto> getOrderLines() {

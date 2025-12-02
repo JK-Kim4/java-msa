@@ -60,7 +60,7 @@ public class OrderCreateService implements OrderCreateUseCase {
     private OrderOutbox createPendingOutbox(Order order) {
         List<CommonOrderLine> orderLines = order.getOrderLines().stream().map(
                 orderLine -> {
-                    return new CommonOrderLine(orderLine.getProductId(), orderLine.getQuantity(), orderLine.getUnitPrice());
+                    return new CommonOrderLine(orderLine.getProductId(), orderLine.getUnitPrice(), orderLine.getQuantity());
                 }
         ).toList();
 

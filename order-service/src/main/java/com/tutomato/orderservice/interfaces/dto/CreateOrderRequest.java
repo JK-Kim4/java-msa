@@ -7,14 +7,17 @@ import java.util.List;
 
 public class CreateOrderRequest {
 
-    List<OrderLineDto> orderLineDtos;
+    List<OrderLineDto> orderLines;
+
+    protected CreateOrderRequest() {
+    }
 
     public OrderCommand.Create toCommand(String userId) {
-        return OrderCommand.Create.of(userId, orderLineDtos);
+        return OrderCommand.Create.of(userId, orderLines);
     }
 
     public List<OrderLineDto> getOrderLines() {
-        return orderLineDtos;
+        return orderLines;
     }
 
     public static class OrderLineDto {
@@ -34,9 +37,9 @@ public class CreateOrderRequest {
 
         public static OrderLineDto from(OrderLine orderLine) {
             return new OrderLineDto(
-                    orderLine.getProductId(),
-                    orderLine.getQuantity(),
-                    orderLine.getUnitPrice()
+                orderLine.getProductId(),
+                orderLine.getQuantity(),
+                orderLine.getUnitPrice()
             );
         }
 

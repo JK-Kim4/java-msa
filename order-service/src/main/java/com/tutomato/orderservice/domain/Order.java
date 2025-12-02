@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +36,10 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
+
     @Column(name = "user_id", nullable = false)
     private String userId;
 
@@ -47,15 +53,17 @@ public class Order {
     protected Order() {
     }
 
-    protected Order(String userId, String orderId) {
+    protected Order(String userId, String orderId, OrderStatus orderStatus) {
         this.userId = userId;
         this.orderId = orderId;
+        this.orderStatus = orderStatus;
         this.totalPrice = 0;
         this.orderLines = new ArrayList<>();
+        this.createdAt = Instant.now();
     }
 
-    public static Order from(String userId, String orderId) {
-        return new Order(userId, orderId);
+    public static Order create(String userId, String orderId) {
+        return new Order(userId, orderId, OrderStatus.CREATED);
     }
 
     public void allocateOrderLines(List<OrderLine> orderLines) {
