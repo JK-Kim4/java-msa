@@ -1,12 +1,10 @@
 package com.tutomato.paymentservice.infrastructure.message;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import com.tutomato.commonmessaging.topic.KafkaTopics.TopicGroups;
 import com.tutomato.paymentservice.application.OrderPaymentService;
 import com.tutomato.paymentservice.application.PaymentCommand;
-import com.tutomato.paymentservice.domain.Payment;
 import com.tutomato.paymentservice.infrastructure.lock.RedisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

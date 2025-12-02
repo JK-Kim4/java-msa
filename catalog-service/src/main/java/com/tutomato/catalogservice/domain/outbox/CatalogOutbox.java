@@ -1,4 +1,4 @@
-package com.tutomato.paymentservice.domain.outbox;
+package com.tutomato.catalogservice.domain.outbox;
 
 import com.tutomato.commonmessaging.common.AggregateType;
 import com.tutomato.commonmessaging.common.OutboxStatus;
@@ -15,8 +15,8 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "payment_outboxs")
-public class PaymentOutbox {
+@Table(name = "catalog_outboxs")
+public class CatalogOutbox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,16 +52,16 @@ public class PaymentOutbox {
     @Column(name = "published_at")
     private Instant publishedAt;
 
-    protected PaymentOutbox() {
+    protected CatalogOutbox() {
     }
 
-    public static PaymentOutbox pending(
+    public static CatalogOutbox pending(
         AggregateType aggregateType,
         String aggregateId,
         String eventType,
         String payload
     ) {
-        PaymentOutbox outbox = new PaymentOutbox();
+        CatalogOutbox outbox = new CatalogOutbox();
         outbox.aggregateType = aggregateType;
         outbox.aggregateId = aggregateId;
         outbox.eventType = eventType;
@@ -83,7 +83,6 @@ public class PaymentOutbox {
         this.retryCount++;
         this.updatedAt = Instant.now();
     }
-
 
     public Long getId() {
         return id;
@@ -125,7 +124,7 @@ public class PaymentOutbox {
         return publishedAt;
     }
 
-    public boolean isSuccess() {
-        return this.eventType.equalsIgnoreCase(KafkaTopics.PAYMENT_SUCCESS);
+    public boolean isSuccessMessage() {
+        return this.eventType.equals(KafkaTopics.CATALOG_STOCK_DECREASE);
     }
 }

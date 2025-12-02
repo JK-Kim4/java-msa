@@ -3,6 +3,7 @@ package com.tutomato.orderservice.infrastructure;
 import com.tutomato.orderservice.domain.Order;
 import com.tutomato.orderservice.domain.OrderLine;
 
+import jakarta.persistence.NoResultException;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -29,4 +30,8 @@ public class OrderRepository {
         return orderLineJpaRepository.saveAll(orderLines);
     }
 
+    public Order findByOrderId(String orderId) {
+        return orderJpaRepository.findByOrderId(orderId)
+            .orElseThrow(NoResultException::new);
+    }
 }

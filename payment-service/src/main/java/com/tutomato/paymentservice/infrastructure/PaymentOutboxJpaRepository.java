@@ -16,5 +16,5 @@ public interface PaymentOutboxJpaRepository extends JpaRepository<PaymentOutbox,
         where po.status = :status
         order by po.createdAt desc
         """)
-    List<PaymentOutbox> findPendingOutbox(OutboxStatus outboxStatus, Pageable pageable);
+    List<PaymentOutbox> findPendingOutbox(OutboxStatus status, Pageable pageable);
 }

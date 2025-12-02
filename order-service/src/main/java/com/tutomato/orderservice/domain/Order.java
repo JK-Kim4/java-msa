@@ -93,9 +93,18 @@ public class Order {
         this.orderStatus = OrderStatus.COMPLETED;
     }
 
+    public void pending() {
+        this.orderStatus = OrderStatus.PENDING;
+    }
+
+    public void failed() {
+        this.orderStatus = OrderStatus.FAILED;
+    }
+
     public boolean isOrderTransactionCompleted() {
         return paymentConfirmed && stockConfirmed;
     }
+
 
     public Long getId() {
         return id;
@@ -120,4 +129,5 @@ public class Order {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
 }

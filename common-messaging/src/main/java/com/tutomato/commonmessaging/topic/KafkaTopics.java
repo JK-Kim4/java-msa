@@ -27,6 +27,9 @@ public class KafkaTopics {
         public static final String ORDER_COMPLETED = "catalog-service.order.completed-group";
         public static final String ORDER_COMPLETE = "order-complete-group";
         public static final String PAYMENT_SUCCESS = "payment-success-group";
+        public static final String PAYMENT_FAIL = "payment-fail-group";
+        public static final String STOCK_DECREASE_SUCCESS = "catalog-stock-decrease-success-group";
+        public static final String STOCK_DECREASE_FAIL = "catalog-stock-decrease-fail-group";;
     }
 }
 

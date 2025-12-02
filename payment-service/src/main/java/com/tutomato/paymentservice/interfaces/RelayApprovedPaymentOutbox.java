@@ -1,6 +1,7 @@
 package com.tutomato.paymentservice.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tutomato.commonmessaging.payment.PaymentFailMessage;
 import com.tutomato.commonmessaging.payment.PaymentSuccessMessage;
 import com.tutomato.paymentservice.domain.outbox.PaymentOutbox;
 import com.tutomato.paymentservice.domain.outbox.PaymentOutboxService;
@@ -43,14 +44,23 @@ public class RelayApprovedPaymentOutbox {
 
         List<PaymentOutbox> outboxes = paymentOutboxService.findTop100PendingList();
 
-        outboxes.forEach(paymentOutbox -> {
+        outboxes.forEach(outbox -> {
             try {
 
-                PaymentSuccessMessage message =
-                    objectMapper.readValue(paymentOutbox.getPayload(), PaymentSuccessMessage.class);
+                if (outbox.isSuccess()) {
+                    PaymentSuccessMessage message =
+                        objectMapper.readValue(outbox.getPayload(), PaymentSuccessMessage.class);
 
-                paymentMessagePublisher.send(message);
-                paymentOutbox.markPublished();
+                    paymentMessagePublisher.send(message);
+                } else {
+
+                    PaymentFailMessage message =
+                        objectMapper.readValue(outbox.getPayload(), PaymentFailMessage.class);
+
+                    paymentMessagePublisher.fail(message);
+                }
+
+                outbox.markPublished();
             } catch (Exception ex) {
                 logger.error(ex.getMessage(), ex);
             }
