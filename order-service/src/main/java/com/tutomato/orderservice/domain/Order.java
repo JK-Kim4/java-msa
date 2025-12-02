@@ -18,7 +18,7 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table(name = "orders_v2")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -40,6 +40,12 @@ public class Order {
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
+    @Column(name = "payment_confirmed", nullable = false)
+    private boolean paymentConfirmed;
+
+    @Column(name = "stock_confirmed", nullable = false)
+    private boolean stockConfirmed;
+
     @Column(name = "user_id", nullable = false)
     private String userId;
 
@@ -59,6 +65,8 @@ public class Order {
         this.orderStatus = orderStatus;
         this.totalPrice = 0;
         this.orderLines = new ArrayList<>();
+        this.paymentConfirmed = false;
+        this.stockConfirmed = false;
         this.createdAt = Instant.now();
     }
 
@@ -71,6 +79,22 @@ public class Order {
         this.totalPrice = orderLines.stream()
             .mapToInt(OrderLine::calculateLinePrice)
             .sum();
+    }
+
+    public void paid() {
+        this.paymentConfirmed = true;
+    }
+
+    public void stockDecreased() {
+        this.stockConfirmed = true;
+    }
+
+    public void completed() {
+        this.orderStatus = OrderStatus.COMPLETED;
+    }
+
+    public boolean isOrderTransactionCompleted() {
+        return paymentConfirmed && stockConfirmed;
     }
 
     public Long getId() {
