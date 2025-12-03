@@ -16,6 +16,8 @@ public class KafkaTopics {
     public static final String PAYMENT_FAIL = "payment.fail";
     public static final String CATALOG_STOCK_DECREASE = "catalog.stock-decrease";
     public static final String CATALOG_STOCK_DECREASE_FAIL = "catalog.stock-decrease.fail";
+    public static final String COUPON_CREATE = "coupon-create";
+
 
 
     public static class TopicGroups {
@@ -30,6 +32,7 @@ public class KafkaTopics {
         public static final String PAYMENT_FAIL = "payment-fail-group";
         public static final String STOCK_DECREASE_SUCCESS = "catalog-stock-decrease-success-group";
         public static final String STOCK_DECREASE_FAIL = "catalog-stock-decrease-fail-group";;
+        public static final String COUPON_CREATE = "coupon-create-group";
     }
 }
 

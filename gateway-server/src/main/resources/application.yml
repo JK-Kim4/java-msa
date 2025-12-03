@@ -36,6 +36,13 @@ spring:
               filters:
                 - StripPrefix=1
 
+            - id: coupon-service-health-check
+              uri: lb://coupon-service
+              predicates:
+                - Path=/coupon-service/health-check, /coupon-service/actuator/**
+              filters:
+                - StripPrefix=1
+
             - id: user-service-login
               uri: lb://user-service
               predicates:
@@ -74,6 +81,15 @@ spring:
               filters:
                 - AuthorizationHeaderFilter
                 - StripPrefix=1
+
+            - id: coupon-service
+              uri: lb://coupon-service
+              predicates:
+                - Path=/coupon-service/**
+              filters:
+                - AuthorizationHeaderFilter
+                - StripPrefix=1
+
   rabbitmq:
     host: localhost
     port: 5672

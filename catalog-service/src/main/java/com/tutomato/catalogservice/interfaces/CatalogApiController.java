@@ -22,6 +22,8 @@ public class CatalogApiController {
 
     @GetMapping("/catalogs")
     public ResponseEntity<List<CatalogResponse>> getCatalogs() {
+        System.out.println("=== get catalogs ====");
+
         List<Catalog> catalogs = catalogService.findAll();
 
         return ResponseEntity.ok(CatalogResponse.fromList(catalogs));

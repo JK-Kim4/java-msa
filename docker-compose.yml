@@ -75,6 +75,25 @@ services:
       timeout: 5s
       retries: 5
 
+  coupon_db:
+    image: postgres:17
+    container_name: coupon_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: msa-coupon
+      POSTGRES_USER: msa-coupon
+      POSTGRES_PASSWORD: msa-coupon
+      TZ: UTC
+    ports:
+      - "54335:5432"
+    volumes:
+      - pgdata5:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
@@ -151,4 +170,5 @@ volumes:
   pgdata2:
   pgdata3:
   pgdata4:
+  pgdata5:
   rabbitmq_data:
