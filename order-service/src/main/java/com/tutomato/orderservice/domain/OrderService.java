@@ -1,14 +1,27 @@
 package com.tutomato.orderservice.domain;
 
-import com.tutomato.orderservice.infrastructure.OrderJpaRepository;
 import com.tutomato.orderservice.infrastructure.OrderRepository;
-import com.tutomato.orderservice.infrastructure.lock.DistributedLock;
-import com.tutomato.orderservice.infrastructure.lock.LockKey;
-import com.tutomato.orderservice.infrastructure.lock.RedisRepository;
+import jakarta.persistence.LockTimeoutException;
+import jakarta.persistence.PessimisticLockException;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Retryable(
+    // 재시도 대상 예외
+    value = {
+        PessimisticLockingFailureException.class,
+        CannotAcquireLockException.class,
+        LockTimeoutException.class,
+        PessimisticLockException.class
+    },
+    maxAttempts = 5,
+    backoff = @Backoff(delay = 100)
+)
 @Transactional
 public class OrderService {
 
@@ -19,14 +32,8 @@ public class OrderService {
     }
 
 
-    @DistributedLock(
-        key = LockKey.UPDATE_ORDER,
-        keyValue = "#orderId",
-        retryCount = 5,
-        retryDelay = 300
-    )
     public void decreaseStockComplete(String orderId) {
-        Order order = orderRepository.findByOrderId(orderId);
+        Order order = orderRepository.findByOrderIdWithPessimisticLock(orderId);
 
         order.stockDecreased();
 
@@ -37,28 +44,16 @@ public class OrderService {
         }
     }
 
-    @DistributedLock(
-        key = LockKey.UPDATE_ORDER,
-        keyValue = "#orderId",
-        retryCount = 5,
-        retryDelay = 300
-    )
     public void decreaseStockFail(String orderId) {
-        Order order = orderRepository.findByOrderId(orderId);
+        Order order = orderRepository.findByOrderIdWithPessimisticLock(orderId);
 
         order.failed();
 
         //todo fail reason
     }
 
-    @DistributedLock(
-        key = LockKey.UPDATE_ORDER,
-        keyValue = "#orderId",
-        retryCount = 5,
-        retryDelay = 300
-    )
     public void paymentSuccess(String orderId) {
-        Order order = orderRepository.findByOrderId(orderId);
+        Order order = orderRepository.findByOrderIdWithPessimisticLock(orderId);
 
         order.paid();
 
@@ -69,14 +64,8 @@ public class OrderService {
         }
     }
 
-    @DistributedLock(
-        key = LockKey.UPDATE_ORDER,
-        keyValue = "#orderId",
-        retryCount = 5,
-        retryDelay = 300
-    )
     public void paymentFail(String orderId) {
-        Order order = orderRepository.findByOrderId(orderId);
+        Order order = orderRepository.findByOrderIdWithPessimisticLock(orderId);
 
         order.failed();
     }

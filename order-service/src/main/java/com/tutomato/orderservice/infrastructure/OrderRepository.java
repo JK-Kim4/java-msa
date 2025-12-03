@@ -34,4 +34,9 @@ public class OrderRepository {
         return orderJpaRepository.findByOrderId(orderId)
             .orElseThrow(NoResultException::new);
     }
+
+    public Order findByOrderIdWithPessimisticLock(String orderId) {
+        return orderJpaRepository.findByOrderIdWithPessimisticLock(orderId)
+            .orElseThrow(NoResultException::new);
+    }
 }
