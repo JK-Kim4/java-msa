@@ -74,3 +74,11 @@ project(':payment-service') {
         implementation project(':common-messaging')
     }
 }
+
+project(':coupon-service') {
+    apply plugin: 'org.springframework.boot'
+
+    dependencies {
+        implementation project(':common-messaging')
+    }
+}
