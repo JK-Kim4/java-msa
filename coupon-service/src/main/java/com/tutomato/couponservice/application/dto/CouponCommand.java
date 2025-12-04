@@ -56,7 +56,8 @@ public class CouponCommand {
         String userId;
         Instant requestedAt;
 
-        protected Request() {}
+        protected Request() {
+        }
 
         protected Request(
             String couponId,
@@ -81,6 +82,42 @@ public class CouponCommand {
 
         public String getUserId() {
             return userId;
+        }
+    }
+
+    public static class Issue {
+
+        String couponId;
+        String userId;
+        Instant requestedAt;
+
+        protected Issue() {
+        }
+
+        protected Issue(
+            String couponId,
+            String userId,
+            Instant requestedAt
+        ) {
+            this.couponId = couponId;
+            this.userId = userId;
+            this.requestedAt = requestedAt;
+        }
+
+        public static Issue of(String couponId, String userId, Instant requestedAt) {
+            return new Issue(couponId, userId, requestedAt);
+        }
+
+        public String getCouponId() {
+            return couponId;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public Instant getRequestedAt() {
+            return requestedAt;
         }
     }
 }

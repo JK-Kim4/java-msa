@@ -3,6 +3,7 @@ package com.tutomato.couponservice.config;
 import java.time.Duration;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
@@ -26,6 +27,8 @@ public class RedisConfig {
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config();
+
+        config.setCodec(StringCodec.INSTANCE);
 
         String address = String.format("redis://%s:%d",
             redisProperties.getHost(),

@@ -32,6 +32,11 @@ public class RedisRepository {
         set.add(score, value);
     }
 
+    public int getZSetSize(String key) {
+        RScoredSortedSet<String> set = redissonClient.getScoredSortedSet(key);
+        return set.size();
+    }
+
     public boolean existsInZSet(String key, String value) {
         RScoredSortedSet<String> set = getSet(key);
         return set.contains(value);

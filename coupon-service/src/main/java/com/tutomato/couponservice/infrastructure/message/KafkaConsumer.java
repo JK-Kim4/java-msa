@@ -3,7 +3,6 @@ package com.tutomato.couponservice.infrastructure.message;
 import com.tutomato.commonmessaging.coupon.CouponCreateMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import com.tutomato.commonmessaging.topic.KafkaTopics.TopicGroups;
-import com.tutomato.couponservice.domain.CouponService;
 import com.tutomato.couponservice.infrastructure.RedisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +14,14 @@ public class KafkaConsumer {
 
     public final static String COUPON_COUNTER_PREFIX = "coupon:counter:";
     public final static String COUPON_CANDIDATES_PREFIX = "coupon:candidates:%s";
-    public final static String COUPON_WINNERS_PREFIX = "coupon:winners:";
+    public final static String COUPON_WINNERS_PREFIX = "coupon:winners:%s";
 
     private final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
-    private final CouponService couponService;
     private final RedisRepository redisRepository;
 
-    public KafkaConsumer(RedisRepository redisRepository, CouponService couponService) {
+    public KafkaConsumer(RedisRepository redisRepository) {
         this.redisRepository = redisRepository;
-        this.couponService = couponService;
     }
 
     @KafkaListener(
