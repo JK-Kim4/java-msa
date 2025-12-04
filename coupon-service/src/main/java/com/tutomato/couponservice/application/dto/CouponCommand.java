@@ -2,6 +2,7 @@ package com.tutomato.couponservice.application.dto;
 
 import com.tutomato.couponservice.domain.Coupon;
 import com.tutomato.couponservice.domain.CouponType;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -49,4 +50,37 @@ public class CouponCommand {
         }
     }
 
+    public static class Request {
+
+        String couponId;
+        String userId;
+        Instant requestedAt;
+
+        protected Request() {}
+
+        protected Request(
+            String couponId,
+            String userId
+        ) {
+            this.couponId = couponId;
+            this.userId = userId;
+            this.requestedAt = Instant.now();
+        }
+
+        public static Request of(String couponId, String userId) {
+            return new Request(couponId, userId);
+        }
+
+        public Instant getRequestedAt() {
+            return requestedAt;
+        }
+
+        public String getCouponId() {
+            return couponId;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+    }
 }

@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaConsumer {
 
-    private final static String COUPON_COUNTER_PREFIX = "coupon:counter:";
-    private final static String COUPON_CANDIDATES_PREFIX = "coupon:candidates:";
-    private final static String COUPON_WINNERS_PREFIX = "coupon:winners:";
+    public final static String COUPON_COUNTER_PREFIX = "coupon:counter:";
+    public final static String COUPON_CANDIDATES_PREFIX = "coupon:candidates:%s";
+    public final static String COUPON_WINNERS_PREFIX = "coupon:winners:";
 
     private final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
