@@ -1,9 +1,10 @@
 package com.tutomato.orderservice.interfaces;
 
 import com.tutomato.orderservice.application.OrderCreateService;
+import com.tutomato.orderservice.domain.OrderService;
 import com.tutomato.orderservice.domain.dto.OrderResult;
 import com.tutomato.orderservice.interfaces.dto.CreateOrderRequest;
-import com.tutomato.orderservice.interfaces.dto.OrderResponseV2;
+import java.util.List;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderApiController {
 
     private final OrderCreateService orderCreateService;
+    private final OrderService orderService;
     private final Environment environment;
 
     public OrderApiController(
         OrderCreateService orderCreateService,
+        OrderService orderService,
         Environment environment
     ) {
         this.environment = environment;
+        this.orderService = orderService;
         this.orderCreateService = orderCreateService;
     }
 
@@ -37,22 +41,22 @@ public class OrderApiController {
     }
 
     @PostMapping("/{userId}/orders")
-    public ResponseEntity<OrderResponseV2> create(
+    public ResponseEntity<Void> create(
         @PathVariable(name = "userId") String userId,
         @RequestBody CreateOrderRequest request
     ) {
-        OrderResult order = orderCreateService.create(request.toCommand(userId));
+        orderCreateService.create(request.toCommand(userId));
 
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(OrderResponseV2.from(order));
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     @GetMapping("/{userId}/orders")
-    public ResponseEntity<> findOrders(
-            @PathVariable(name = "userId") String userId
+    public ResponseEntity<List<OrderResult>> findOrders(
+        @PathVariable(name = "userId") String userId
     ) {
+        List<OrderResult> orderResults = orderService.findByUserId(userId);
 
+        return ResponseEntity.ok(orderResults);
     }
 
 }

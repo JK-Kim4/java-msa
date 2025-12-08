@@ -9,6 +9,8 @@ import com.tutomato.userservice.interfaces.dto.CreateUserResponse;
 import com.tutomato.userservice.interfaces.dto.LoginRequest;
 import com.tutomato.userservice.interfaces.dto.LoginResponse;
 import com.tutomato.userservice.interfaces.dto.UserResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserApiController {
 
+    private final Logger logger = LoggerFactory.getLogger(UserApiController.class);
     private final UserService userService;
     private final Environment environment;
 
@@ -33,7 +36,11 @@ public class UserApiController {
     public ResponseEntity<CreateUserResponse> create(
         @RequestBody CreateUserRequest request
     ) {
+        logger.info("USER SAVE REQUEST START {}", request);
+
         UserResult.Create result = userService.create(UserCommand.Create.from(request));
+
+        logger.info("USER SAVE REQUEST END {}", request);
 
         return ResponseEntity
             .status(HttpStatus.CREATED)

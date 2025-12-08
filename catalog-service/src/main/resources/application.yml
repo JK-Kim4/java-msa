@@ -27,10 +27,8 @@ spring:
     password: msa
   data:
     redis:
-      port: 6379
       host: localhost
-      timeout: 2s
-      connect-timeout: 3s
+      port: 6379
 
   kafka:
     bootstrap-servers: localhost:29092

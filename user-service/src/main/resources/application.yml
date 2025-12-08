@@ -1,14 +1,59 @@
+server:
+  port: 0
+
 spring:
   application:
     name: user-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:54331/msa-user
+    username: msa-user
+    password: msa-user
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  main:
+    allow-bean-definition-overriding: true
   rabbitmq:
     host: localhost
     port: 5672
     username: msa
     password: msa
-  zipkin:
-    base-url: http://localhost:9411
-    enabled: true
-  sleuth:
-    sampler:
-      probability: 1.0
+  cloud:
+    openfeign:
+      micrometer:
+        enabled: true
+
+management:
+  tracing:
+    sampling:
+      probability: 0
+    export:
+      zipkin:
+        endpoint: http://localhost:9411/api/v2/spans  # Zipkin 수집 엔드포인트(기본)
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  pattern:
+    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+gateway:
+  url: http://localhost:8000
+
+url:
+  order-service: http://order-service

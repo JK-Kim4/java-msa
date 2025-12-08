@@ -14,8 +14,12 @@ dependencies {
     implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.15.1'
     implementation 'org.redisson:redisson-spring-boot-starter:3.52.0'
     implementation 'org.springframework.retry:spring-retry'
-    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.3.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Micrometer Tracing (Brave 기반)
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.github.openfeign:feign-micrometer'
 
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

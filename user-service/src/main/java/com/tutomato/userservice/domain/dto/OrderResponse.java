@@ -1,43 +1,51 @@
 package com.tutomato.userservice.domain.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderResponse {
 
-    private String productId;
-    private Integer quantity;
-    private Integer unitPrice;
-    private Integer totalPrice;
-    private String userId;
     private String orderId;
+    private String userId;
+    private List<OrderLineDto> orderLines;
     private LocalDateTime createdAt;
 
+    protected OrderResponse() {}
 
-    public String getProductId() {
-        return productId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public Integer getUnitPrice() {
-        return unitPrice;
-    }
-
-    public Integer getTotalPrice() {
-        return totalPrice;
+    public String getOrderId() {
+        return orderId;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public List<OrderLineDto> getOrderLines() {
+        return orderLines;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    private static class OrderLineDto {
+        String productId;
+        Integer quantity;
+        Integer unitPrice;
+
+        protected OrderLineDto() {}
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public Integer getUnitPrice() {
+            return unitPrice;
+        }
+    }
+
 }

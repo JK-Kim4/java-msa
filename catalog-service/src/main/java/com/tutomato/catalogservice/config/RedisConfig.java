@@ -1,5 +1,6 @@
 package com.tutomato.catalogservice.config;
 
+import java.time.Duration;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -12,8 +13,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.time.Duration;
 
 @Configuration
 public class RedisConfig {
@@ -29,13 +28,13 @@ public class RedisConfig {
         Config config = new Config();
 
         String address = String.format("redis://%s:%d",
-                redisProperties.getHost(),
-                redisProperties.getPort()
+            redisProperties.getHost(),
+            redisProperties.getPort()
         );
 
         SingleServerConfig single = config.useSingleServer()
-                .setAddress(address)
-                .setDatabase(redisProperties.getDatabase());
+            .setAddress(address)
+            .setDatabase(redisProperties.getDatabase());
 
         // command timeout
         Duration timeout = redisProperties.getTimeout();

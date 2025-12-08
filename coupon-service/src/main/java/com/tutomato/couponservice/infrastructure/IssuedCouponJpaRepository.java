@@ -13,11 +13,16 @@ public interface IssuedCouponJpaRepository extends JpaRepository<IssuedCoupon, L
                   select ic
                   from IssuedCoupon ic
                   where ic.coupon.couponId = :couponId and ic.ownUserId = :userId
-            """
-    )
+            """)
     Optional<IssuedCoupon> findByCouponIdAndOwnUserId(
         @Param("couponId") String couponId,
         @Param("userId") String userId
     );
 
+    @Query("""
+            select count(ic)
+            from IssuedCoupon ic
+            where ic.coupon.couponId = :couponId
+        """)
+    Integer getCountByCouponId(@Param("couponId")String couponId);
 }
