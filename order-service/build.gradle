@@ -14,6 +14,8 @@ dependencies {
     implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.15.1'
     implementation 'org.redisson:redisson-spring-boot-starter:3.52.0'
     implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.3.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

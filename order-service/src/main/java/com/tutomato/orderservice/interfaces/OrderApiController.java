@@ -48,4 +48,11 @@ public class OrderApiController {
             .body(OrderResponseV2.from(order));
     }
 
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<> findOrders(
+            @PathVariable(name = "userId") String userId
+    ) {
+
+    }
+
 }

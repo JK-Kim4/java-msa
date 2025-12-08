@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Retryable(
-    // 재시도 대상 예외
     value = {
         PessimisticLockingFailureException.class,
         CannotAcquireLockException.class,

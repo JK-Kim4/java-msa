@@ -12,6 +12,8 @@ import com.tutomato.userservice.infrastructure.order.OrderServiceClient;
 import java.time.Instant;
 import java.util.List;
 import org.apache.hc.core5.http.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -24,6 +26,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Transactional
 public class UserService {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Environment environment;
     private final RestTemplate restTemplate;
@@ -49,6 +53,9 @@ public class UserService {
     }
 
     public UserResult.Create create(UserCommand.Create command) {
+
+        logger.info("Creating user START {}", command.getName());
+
         User user = User.create(
             command.getEmail(),
             command.getPwd(),
@@ -57,6 +64,8 @@ public class UserService {
 
         UserEntity entity = UserEntity.from(user);
         userJpaRepository.save(entity);
+
+        logger.info("Creating user END {}", command.getName());
 
         return UserResult.Create.from(entity);
     }
