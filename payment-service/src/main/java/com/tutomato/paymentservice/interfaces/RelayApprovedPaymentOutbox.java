@@ -3,10 +3,10 @@ package com.tutomato.paymentservice.interfaces;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tutomato.commonmessaging.payment.PaymentFailMessage;
 import com.tutomato.commonmessaging.payment.PaymentSuccessMessage;
-import com.tutomato.paymentservice.domain.outbox.PaymentOutbox;
 import com.tutomato.paymentservice.domain.outbox.PaymentOutboxService;
 import com.tutomato.paymentservice.infrastructure.message.PaymentMessagePublisher;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,36 +35,30 @@ public class RelayApprovedPaymentOutbox {
 
     @Transactional
     @Scheduled(initialDelay = 5000L, fixedDelay = 1000L)
-    @SchedulerLock(
-        name = "pamynetOutboxRelayJob",
-        lockAtMostFor = "5s",
-        lockAtLeastFor = "1s"
-    )
+    @SchedulerLock(name = "paymentOutboxRelayJob", lockAtMostFor = "3s", lockAtLeastFor = "1s")
     public void relay() {
+        List<PaymentOutboxRow> batch = paymentOutboxService.claimTop100();
 
-        List<PaymentOutbox> outboxes = paymentOutboxService.findTop100PendingList();
-
-        outboxes.forEach(outbox -> {
+        for (PaymentOutboxRow row : batch) {
             try {
+                CompletableFuture<?> f = row.isSuccess()
+                    ? paymentMessagePublisher.send(
+                    objectMapper.readValue(row.getPayload(), PaymentSuccessMessage.class))
+                    : paymentMessagePublisher.fail(
+                        objectMapper.readValue(row.getPayload(), PaymentFailMessage.class));
 
-                if (outbox.isSuccess()) {
-                    PaymentSuccessMessage message =
-                        objectMapper.readValue(outbox.getPayload(), PaymentSuccessMessage.class);
+                f.whenComplete((ok, ex) -> {
+                    if (ex == null) {
+                        paymentOutboxService.markPublished(row.getId());
+                    } else {
+                        paymentOutboxService.markFailed(row.getId(), ex.getMessage());
+                    }
+                });
 
-                    paymentMessagePublisher.send(message);
-                } else {
-
-                    PaymentFailMessage message =
-                        objectMapper.readValue(outbox.getPayload(), PaymentFailMessage.class);
-
-                    paymentMessagePublisher.fail(message);
-                }
-
-                outbox.markPublished();
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
+            } catch (Exception parseEx) {
+                paymentOutboxService.markFailed(row.getId(), parseEx.getMessage());
             }
-        });
+        }
     }
 
 }

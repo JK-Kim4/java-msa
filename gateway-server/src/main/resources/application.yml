@@ -81,6 +81,10 @@ spring:
               filters:
                 - AuthorizationHeaderFilter
                 - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: orderServiceCircuitBreaker   # 서킷브레이커 인스턴스 이름
+                    fallbackUri: forward:/fallback/orders
 
             - id: coupon-service
               uri: lb://coupon-service
@@ -110,3 +114,19 @@ management:
     web:
       exposure:
         include: "*"
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20              # 최근 20개 호출을 기준
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 5           # 실패 비율 5% 이상이면 open
+        waitDurationInOpenState: 1s       # open -> half-open으로 전환 대기시간
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+    instances:
+      orderServiceCircuitBreaker:
+        baseConfig: default
