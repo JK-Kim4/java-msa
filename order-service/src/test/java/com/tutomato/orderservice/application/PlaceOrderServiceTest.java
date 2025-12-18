@@ -6,6 +6,7 @@ import com.tutomato.orderservice.infrastructure.OrderRepository;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,34 +34,50 @@ class PlaceOrderServiceTest {
 
     @Test
     void dbCommit_success_but_kafka_send_fails_after_commit() throws Exception {
-        var scheduler = Executors.newSingleThreadScheduledExecutor();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<Throwable> sendError = new AtomicReference<>();
 
         Mockito.doAnswer(inv -> {
-            CompletableFuture<SendResult<String, Object>> f = new CompletableFuture<>();
-            // "커밋 이후"를 만들기 위해 지연 후 실패 처리
-            scheduler.schedule(() -> {
-                RuntimeException ex = new RuntimeException("Simulated broker/network failure");
-                sendError.set(ex);
-                f.completeExceptionally(ex);
-                latch.countDown();
-            }, 200, TimeUnit.MILLISECONDS);
-            return f;
+            CompletableFuture<SendResult<String, String>> future = new CompletableFuture<>();
+
+            executor.submit(() -> {
+                try {
+                    // "커밋 이후" 실패를 만들기 위한 인위적 지연
+                    Thread.sleep(200);
+
+                    RuntimeException ex = new RuntimeException("Simulated broker/network failure");
+                    sendError.set(ex);
+                    future.completeExceptionally(ex);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    RuntimeException ex = new RuntimeException(
+                        "Interrupted while simulating send failure", e);
+                    sendError.set(ex);
+                    future.completeExceptionally(ex);
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+            return future;
         }).when(kafkaTemplate).send(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
-        // when
-        Order order = orderService.placeOrder(createCommand()); // 이 시점에 트랜잭션 종료 + 커밋 완료
+        try {
+            // when: 이 시점에 트랜잭션 종료 + 커밋 완료
+            Order order = orderService.placeOrder(createCommand());
 
-        // then: DB는 커밋돼서 존재해야 함
-        Assertions.assertTrue(orderRepository.existsById(order.getOrderId()));
+            // then: DB는 커밋돼서 존재해야 함
+            Assertions.assertTrue(orderRepository.existsById(order.getOrderId()));
 
-        // then: 커밋 이후 Kafka 전송 실패가 관측되어야 함
-        Assertions.assertTrue(latch.await(2, TimeUnit.SECONDS));
-        Assertions.assertNotNull(sendError.get());
-
-        scheduler.shutdownNow();
+            // then: 커밋 이후 Kafka 전송 실패가 관측되어야 함
+            Assertions.assertTrue(latch.await(2, TimeUnit.SECONDS));
+            Assertions.assertNotNull(sendError.get());
+        } finally {
+            executor.shutdownNow();
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        }
     }
 
     private OrderCommand.Create createCommand() {
