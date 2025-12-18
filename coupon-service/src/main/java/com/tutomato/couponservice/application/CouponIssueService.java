@@ -2,6 +2,7 @@ package com.tutomato.couponservice.application;
 
 import com.tutomato.couponservice.application.dto.CouponCommand;
 import com.tutomato.couponservice.domain.Coupon;
+import com.tutomato.couponservice.domain.CouponService;
 import com.tutomato.couponservice.domain.IssuedCoupon;
 import com.tutomato.couponservice.infrastructure.CouponJpaRepository;
 import com.tutomato.couponservice.infrastructure.IssuedCouponJpaRepository;
@@ -20,15 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponIssueService {
 
     private final CouponJpaRepository couponJpaRepository;
+    private final CouponService couponService;
     private final IssuedCouponJpaRepository issuedCouponJpaRepository;
     private final RedisRepository redisRepository;
 
     public CouponIssueService(
         CouponJpaRepository couponJpaRepository,
+        CouponService couponService,
         IssuedCouponJpaRepository issuedCouponJpaRepository,
         RedisRepository redisRepository
     ) {
         this.redisRepository = redisRepository;
+        this.couponService = couponService;
         this.couponJpaRepository = couponJpaRepository;
         this.issuedCouponJpaRepository = issuedCouponJpaRepository;
     }
@@ -70,7 +74,7 @@ public class CouponIssueService {
     }
 
     public void issue() {
-        List<Long> issuableCoupons = couponJpaRepository.findIssuableCouponIdsBy();
+        List<Long> issuableCoupons = couponService.findIssuableCouponIds();
 
         for (Long issuableCouponId : issuableCoupons) {
             Coupon coupon = couponJpaRepository.findById(issuableCouponId)

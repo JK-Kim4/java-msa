@@ -15,5 +15,5 @@ public interface CouponJpaRepository extends JpaRepository<Coupon, Long> {
               from Coupon c
               where c.isActive = true
         """)
-    List<Long> findIssuableCouponIdsBy();
+    List<Long> findIssuableCouponIds();
 }

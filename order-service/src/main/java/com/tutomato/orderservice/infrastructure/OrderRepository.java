@@ -43,4 +43,8 @@ public class OrderRepository {
     public List<Order> findByUserId(String userId) {
         return orderJpaRepository.findByUserId(userId);
     }
+
+    public boolean existsById(String orderId) {
+        return orderJpaRepository.existsByOrderId(orderId);
+    }
 }

@@ -1,7 +1,5 @@
 package com.tutomato.orderservice.infrastructure.message;
 
-import com.tutomato.commonmessaging.order.OrderIssuedMessage;
-import com.tutomato.commonmessaging.order.OrderPendingMessage;
 import com.tutomato.commonmessaging.topic.KafkaTopics;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

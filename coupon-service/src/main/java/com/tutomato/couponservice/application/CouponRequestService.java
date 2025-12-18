@@ -13,7 +13,8 @@ public class CouponRequestService {
     private final RedisRepository redisRepository;
 
     public CouponRequestService(
-        RedisRepository redisRepository) {
+        RedisRepository redisRepository
+    ) {
         this.redisRepository = redisRepository;
     }
 

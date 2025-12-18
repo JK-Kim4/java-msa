@@ -33,4 +33,6 @@ public interface OrderJpaRepository extends JpaRepository<Order, Long> {
             where o.userId = :userId
         """)
     List<Order> findByUserId(@Param("userId") String userId);
+
+    boolean existsByOrderId(String orderId);
 }
