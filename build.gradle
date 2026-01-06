@@ -37,9 +37,12 @@ subprojects {
     }
 }
 
+project(':discovery-server') {
+    apply plugin: 'org.springframework.boot'
+}
+
 project(':gateway-server') {
     apply plugin: 'org.springframework.boot'
-
 }
 
 project(':config-server') {
